@@ -1,0 +1,323 @@
+{
+  "info": {
+    "_postman_id": "8850720c-35df-4a49-b556-b1f042d6b29a",
+    "name": "QA assessment _meCash",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "30013625"
+  },
+  "item": [
+    {
+      "name": "Successful_transfer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Transfer status is SUCCESS\", function () {\r",
+              "    pm.expect(response.status).to.eql(\"SUCCESS\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Transaction ID exists\", function () {\r",
+              "    pm.expect(response.transactionId).to.not.be.null;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Amount is correct\", function () {\r",
+              "    pm.expect(response.amount).to.eql(500);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Currency is GBP\", function () {\r",
+              "    pm.expect(response.currency).to.eql(\"GBP\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "fb2d1320",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"senderWalletId\": \"WALLET001\",\r\n  \"receiverWalletId\": \"WALLET002\",\r\n  \"amount\": 500,\r\n  \"currency\": \"GBP\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://my.api.mockaroo.com/apiv1/transfers",
+          "protocol": "https",
+          "host": [
+            "my",
+            "api",
+            "mockaroo",
+            "com"
+          ],
+          "path": [
+            "apiv1",
+            "transfers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Unsupported_currency",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Unsupported currency error displayed\", function () {\r",
+              "    pm.expect(response.message).to.include(\"Unsupported currency\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "fb2d1320",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"senderWalletId\": \"WALLET001\",\r\n  \"receiverWalletId\": \"WALLET002\",\r\n  \"amount\": 500,\r\n  \"unsupported currency\": \"NGN\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://my.api.mockaroo.com/api/v1/tranfers/unsupported_currency",
+          "protocol": "https",
+          "host": [
+            "my",
+            "api",
+            "mockaroo",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tranfers",
+            "unsupported_currency"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Invalid_amount",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Invalid amount error message is correct\", function () {\r",
+              "    pm.expect(response[\"Invalid amount\"]).to.eql(\"error: Field 'amount' not found\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-API-KEY",
+            "value": "fb2d1320",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"InvalidAmount\": 0,\r\n  \"currency\": \"GBP,MXN,NGN,CNY,IDR,CZK,EUR,BGN,ETC\"\r\n\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://my.api.mockaroo.com/api/v1/invalid-amount",
+          "protocol": "https",
+          "host": [
+            "my",
+            "api",
+            "mockaroo",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "invalid-amount"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Supported_currencies",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Supported currencies is displayed\", function () {\r",
+              "    pm.expect(response.message).to.include(\"Supported currencies\");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "fb2d1320",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"senderWalletId\": \"WALLET001\",\r\n  \"SupportedCurrencies\": \"GBP USD EUR\",\r\n  \"amount\": 500\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://my.api.mockaroo.com/api/v1/transfers/valid_currencies.json",
+          "protocol": "https",
+          "host": [
+            "my",
+            "api",
+            "mockaroo",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "transfers",
+            "valid_currencies.json"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Missing_receiver_field",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Missing field validation returned\", function () {\r",
+              "    pm.expect(response.message).to.include ()(\"receiverWalletId is required\");\r",
+              "\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-API-Key",
+            "value": "fb2d1320",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"senderWalletId\": \"WALLET001\",\r\n  \"amount\": 500,\r\n  \"currency\": \"GBP\"\r\n  // receiverWalletId missing\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://my.api.mockaroo.com/api/v1/missing_receiver_field",
+          "protocol": "https",
+          "host": [
+            "my",
+            "api",
+            "mockaroo",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "missing_receiver_field"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
